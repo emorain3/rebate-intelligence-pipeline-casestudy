@@ -1,0 +1,84 @@
+
+<style>
+  .alert-wrap { padding: 1.5rem 0; font-family: var(--font-sans); }
+  .alert-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .alert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+  .col-header { padding: 14px 20px; font-size: 13px; font-weight: 500; }
+  .col-header.tech { background: #E6F1FB; color: #0C447C; border-right: 0.5px solid var(--color-border-tertiary); }
+  .col-header.biz { background: #E1F5EE; color: #085041; }
+  .col-header-row { display: contents; }
+  .alert-row { display: contents; }
+  .alert-cell { padding: 12px 20px; font-size: 14px; color: var(--color-text-primary); border-top: 0.5px solid var(--color-border-tertiary); line-height: 1.5; display: flex; align-items: flex-start; gap: 10px; }
+  .alert-cell.tech { border-right: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); }
+  .alert-cell.biz { background: var(--color-background-primary); }
+  .alert-cell i { font-size: 16px; margin-top: 2px; flex-shrink: 0; }
+  .alert-cell.tech i { color: #185FA5; }
+  .alert-cell.biz i { color: #0F6E56; }
+  .col-label { font-size: 11px; font-weight: 500; letter-spacing: 0.05em; display: block; margin-bottom: 2px; }
+  .col-label.tech { color: #185FA5; }
+  .col-label.biz { color: #0F6E56; }
+  .audience-row { display: grid; grid-template-columns: 1fr 1fr; }
+  .audience-tag { font-size: 11px; color: var(--color-text-secondary); padding: 6px 20px 0; }
+</style>
+<div class="alert-wrap">
+  <p class="alert-title">Two-Audience Alert System</p>
+  <div class="alert-grid">
+    <div class="col-header tech">
+      <span class="col-label tech">Technical alerts</span>
+      For the data engineer
+    </div>
+    <div class="col-header biz">
+      <span class="col-label biz">Business alerts</span>
+      For Georgiana's team
+    </div>
+
+    <div class="alert-cell tech">
+      <i class="ti ti-file-alert" aria-hidden="true"></i>
+      <span>File not received by expected date</span>
+    </div>
+    <div class="alert-cell biz">
+      <i class="ti ti-trending-down" aria-hidden="true"></i>
+      <span>Affiliate rebate drops &gt;30% vs average</span>
+    </div>
+
+    <div class="alert-cell tech">
+      <i class="ti ti-layout-columns" aria-hidden="true"></i>
+      <span>Schema change detected in source file</span>
+    </div>
+    <div class="alert-cell biz">
+      <i class="ti ti-building-store" aria-hidden="true"></i>
+      <span>Entire parent group goes dark</span>
+    </div>
+
+    <div class="alert-cell tech">
+      <i class="ti ti-arrow-down-circle" aria-hidden="true"></i>
+      <span>Row count drops &gt;50% vs prior period</span>
+    </div>
+    <div class="alert-cell biz">
+      <i class="ti ti-minus-vertical" aria-hidden="true"></i>
+      <span>Negative amount total exceeds threshold</span>
+    </div>
+
+    <div class="alert-cell tech">
+      <i class="ti ti-id" aria-hidden="true"></i>
+      <span>Unknown affiliate or partner IDs detected</span>
+    </div>
+    <div class="alert-cell biz">
+      <i class="ti ti-heart-rate-monitor" aria-hidden="true"></i>
+      <span>Affiliate Health Score drops below 40</span>
+    </div>
+
+    <div class="alert-cell tech">
+      <i class="ti ti-copy" aria-hidden="true"></i>
+      <span>Duplicate transaction IDs detected</span>
+    </div>
+    <div class="alert-cell biz">
+      <i class="ti ti-clock-exclamation" aria-hidden="true"></i>
+      <span>No file received within expected delivery window</span>
+    </div>
+  </div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; margin-top:8px;">
+    <p style="font-size:12px; color:var(--color-text-secondary); padding: 0 4px;">Routed to: engineer via email / Teams</p>
+    <p style="font-size:12px; color:var(--color-text-secondary); padding: 0 4px;">Routed to: Georgiana's team via Power BI alert / Teams</p>
+  </div>
+</div>

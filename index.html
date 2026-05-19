@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rebate Intelligence Pipeline — Ecclesia Morain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='64'%20height='64'%20viewBox='0%200%2064%2064'%3E%3Cpath%20fill='%239ad9ff'%20stroke='%23000'%20stroke-width='3'%20d='M20%2044h24c6%200%2011-4.9%2011-11%200-5.4-3.7-9.9-8.8-10.8C44.9%2016.7%2040.9%2014%2036%2014c-4.1%200-7.7%202-9.9%205.1C24.9%2019%2023.6%2018.7%2022%2018.7%2016.5%2018.7%2012%2023.2%2012%2028.7%2012%2035.1%2015.9%2044%2020%2044z'/%3E%3Ccircle%20fill='%23000'%20cx='26'%20cy='30'%20r='4.2'/%3E%3Ccircle%20fill='%23fff'%20cx='27.4'%20cy='28.8'%20r='1.2'/%3E%3Ccircle%20fill='%23fff'%20cx='25.2'%20cy='31.2'%20r='0.7'/%3E%3Ccircle%20fill='%23000'%20cx='38'%20cy='30'%20r='4.2'/%3E%3Ccircle%20fill='%23fff'%20cx='39.4'%20cy='28.8'%20r='1.2'/%3E%3Ccircle%20fill='%23fff'%20cx='37.2'%20cy='31.2'%20r='0.7'/%3E%3Cpath%20fill='none'%20stroke='%23000'%20stroke-width='3'%20stroke-linecap='round'%20d='M28%2036c1.3%201.6%203%202.4%205%202.4s3.7-.8%205-2.4'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --navy:   #0f1e35;
+    --navy2:  #162840;
+    --teal:   #00909e;
+    --teal2:  #00b4c5;
+    --ice:    #cde8ec;
+    --cream:  #f5f0e8;
+    --warm:   #ede8de;
+    --text:   #1a2a3a;
+    --muted:  #5a7a8a;
+    --rule:   #d0dce0;
+    --code:   #e8f4f6;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--navy);
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 40%, rgba(0,144,158,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 10% 80%, rgba(0,144,158,0.10) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-nav .sig {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    color: var(--ice);
+    letter-spacing: 0.02em;
+  }
+
+  .hero-nav .sig span {
+    color: var(--teal2);
+  }
+
+  .hero-nav .sc-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--teal2);
+    border: 1px solid rgba(0,180,197,0.35);
+    padding: 0.3rem 0.75rem;
+    border-radius: 2rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hero-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 4rem 4rem;
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--teal2);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: block;
+    width: 2.5rem;
+    height: 1px;
+    background: var(--teal2);
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.8rem, 6vw, 5.2rem);
+    color: #fff;
+    line-height: 1.08;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--teal2);
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: rgba(205,232,236,0.75);
+    max-width: 560px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .disclaimer {
+    margin-top: 1.5rem;
+    font-size: 0.82rem;
+    color: rgba(205,232,236,0.5);
+    font-weight: 300;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+  .fw-step .disclaimer {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.45;
+    opacity: 1;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 2.5rem;
+    padding: 2rem 4rem 3rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+  }
+
+  .hero-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .hero-meta-item .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--teal2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hero-meta-item .val {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.75);
+    font-weight: 400;
+  }
+  .sc-wrap { padding: 1.5rem 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  .sc-title { font-size: 13px; font-weight: 500; color: #6b6b6b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .sc-table { width: 100%; border-collapse: collapse; border: 0.5px solid rgba(0,0,0,0.15); border-radius: 12px; overflow: hidden; }
+  .sc-table thead tr { background: #f5f5f3; }
+  .sc-table th { padding: 12px 16px; font-size: 12px; font-weight: 500; color: #6b6b6b; text-align: left; letter-spacing: 0.04em; border-bottom: 0.5px solid rgba(0,0,0,0.12); }
+  .sc-table td { padding: 12px 16px; font-size: 14px; color: #1a1a1a; border-top: 0.5px solid rgba(0,0,0,0.12); line-height: 1.5; vertical-align: top; background: #ffffff; }
+  .sc-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+  .sc-badge.biz { background: #E1F5EE; color: #085041; }
+  .sc-badge.tech { background: #E6F1FB; color: #0C447C; }
+
+  /* ── SCROLL INDICATOR ── */
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    right: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.4;
+    z-index: 2;
+  }
+
+  .scroll-hint span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--ice);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 3rem;
+    background: linear-gradient(to bottom, var(--teal2), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 0.8; transform: scaleY(1.2); }
+  }
+
+  /* ── MAIN CONTENT ── */
+  main { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+
+  /* ── SECTION ── */
+  section {
+    padding: 5rem 0;
+    border-bottom: 1px solid var(--rule);
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--teal);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 1.8rem;
+    height: 1px;
+    background: var(--teal);
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    color: var(--navy);
+    line-height: 1.15;
+    margin-bottom: 1.8rem;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    color: var(--navy);
+    margin: 2.5rem 0 0.9rem;
+  }
+
+  p { margin-bottom: 1.2rem; color: var(--text); font-weight: 300; }
+
+  p strong { font-weight: 600; color: var(--navy); }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: var(--navy);
+    color: var(--ice);
+    padding: 2rem 2.5rem;
+    border-radius: 4px;
+    margin: 2.5rem 0;
+    border-left: 3px solid var(--teal2);
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .callout strong { color: var(--teal2); font-style: normal; font-weight: 500; }
+
+  /* ── IMAGE PLACEHOLDER ── */
+  .img-wrap {
+    margin: 2.5rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    background: var(--warm);
+  }
+
+  .img-placeholder {
+    width: 100%;
+    aspect-ratio: 16/7;
+    background: linear-gradient(135deg, #e8eef2 0%, #d8e8ec 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border: 2px dashed #b0ccd4;
+  }
+
+  .img-placeholder .img-icon {
+    font-size: 2rem;
+    opacity: 0.4;
+  }
+
+  .img-placeholder .img-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .img-placeholder .img-sub {
+    font-size: 0.8rem;
+    color: #8aacb4;
+    text-align: center;
+    max-width: 340px;
+  }
+
+  .img-caption {
+    padding: 0.65rem 1rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-style: italic;
+    background: var(--warm);
+    border-top: 1px solid var(--rule);
+  }
+
+  /* ── IMAGE ── */
+  .img-wrap {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .img-center {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    background: var(--warm);
+  }
+
+  .case-img {
+    width: auto;
+    max-width: 100%;
+    max-height: 480px;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+
+  /* ── LAYER CARDS ── */
+  .layer-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 2rem 0;
+  }
+
+  .layer-card {
+    background: #fff;
+    padding: 1.8rem 1.5rem;
+  }
+
+  .layer-card .layer-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 2rem;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .layer-card.bronze .layer-tag { background: #fff3e0; color: #b45309; }
+  .layer-card.silver .layer-tag { background: #f0f4f8; color: #475569; }
+  .layer-card.gold   .layer-tag { background: #fef9e7; color: #92700a; }
+
+  .layer-card h4 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--navy);
+    margin-bottom: 0.6rem;
+  }
+
+  .layer-card p {
+    font-size: 0.88rem;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ── RISK BUCKETS ── */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .risk-card {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 1.4rem 1.5rem;
+    border-top: 3px solid var(--teal);
+  }
+
+  .risk-card h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+
+  .risk-card p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* ── FRAMEWORK STEPS ── */
+  .framework {
+    display: flex;
+    gap: 0;
+    margin: 2rem 0;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .fw-step {
+    flex: 1;
+    padding: 1.4rem 1rem;
+    background: #fff;
+    border-right: 1px solid var(--rule);
+    text-align: center;
+    position: relative;
+  }
+
+  .fw-step:last-child { border-right: none; }
+
+  .fw-step .fw-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--teal);
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+  }
+
+  .fw-step .fw-name {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--navy);
+    display: block;
+  }
+
+  /* ── DECISION CARDS ── */
+  .decision-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin: 2rem 0;
+  }
+
+  .decision-card {
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 1.5rem 1.8rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 1.4rem;
+    align-items: start;
+  }
+
+  .decision-card .d-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+    background: var(--code);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .decision-card h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 0.3rem;
+  }
+
+  .decision-card p {
+    font-size: 0.88rem;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── IMPACT CARDS ── */
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .impact-card {
+    background: var(--navy);
+    border-radius: 6px;
+    padding: 2rem 1.5rem;
+    color: var(--ice);
+  }
+
+  .impact-card .i-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    color: var(--teal2);
+    display: block;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .impact-card h4 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .impact-card p {
+    font-size: 0.82rem;
+    color: rgba(205,232,236,0.7);
+    margin: 0;
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: var(--navy);
+    border-radius: 6px;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+  }
+
+  .code-block pre {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--ice);
+    line-height: 1.7;
+    white-space: pre;
+  }
+
+  .code-block .cm  { color: #6b8a9a; }
+  .code-block .ck  { color: var(--teal2); }
+  .code-block .cs  { color: #f0c060; }
+  .code-block .cn  { color: #b5d8e0; }
+
+  /* ── WHAT I LEARNED ── */
+  .feedback-box {
+    background: var(--warm);
+    border: 1px solid #d8cfc0;
+    border-radius: 6px;
+    padding: 2rem 2.5rem;
+    margin: 2rem 0;
+  }
+
+  .feedback-box .fb-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: #8a7a5a;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  .feedback-box p {
+    font-size: 0.95rem;
+    color: #4a3a2a;
+    margin: 0;
+    font-style: italic;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy);
+    padding: 4rem;
+    margin-top: 0;
+  }
+
+  footer .f-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  footer .f-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 0.4rem;
+  }
+
+  footer .f-title {
+    font-size: 0.9rem;
+    color: var(--ice);
+    opacity: 0.6;
+    font-weight: 300;
+  }
+
+  footer .f-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+
+  footer a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--teal2);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s;
+  }
+
+  footer a:hover { opacity: 0.7; }
+
+  /* ── GITHUB LINK ── */
+  .gh-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 2rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--navy);
+    color: var(--ice);
+    text-decoration: none;
+    border-radius: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    border: 1px solid rgba(0,180,197,0.35);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .gh-link:hover { border-color: var(--teal2); color: var(--teal2); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .hero-nav, .hero-body, .hero-meta { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .layer-cards { grid-template-columns: 1fr; }
+    .risk-grid { grid-template-columns: 1fr; }
+    .impact-grid { grid-template-columns: 1fr; }
+    .framework { flex-direction: column; }
+    .fw-step { border-right: none; border-bottom: 1px solid var(--rule); }
+    .fw-step:last-child { border-bottom: none; }
+    main { padding: 0 1.2rem; }
+    footer { padding: 2.5rem 1.5rem; }
+    footer .f-links { align-items: flex-start; }
+  }
+  .disclaimer {
+  margin-top: 1.5rem;
+  font-size: 0.82rem;
+  color: rgba(205,232,236,0.5);
+  font-weight: 300;
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<header class="hero">
+  <nav class="hero-nav">
+    <div class="sig">Ecclesia <span>Morain</span></div>
+    <div class="badge">Portfolio · Data Engineering</div>
+  </nav>
+
+  <div class="hero-body">
+    <div class="hero-label">Case Study</div>
+    <h1 class="hero-title">
+      Rebate Intelligence<br>
+      <em>Pipeline</em>
+    </h1>
+    <p class="hero-sub">
+      Designing a production-grade data pipeline to automate rebate validation,
+      anomaly detection, and exception monitoring for a regional network of independent collision centers.
+    </p>
+    <p class="disclaimer">
+      <em>Note: To protect proprietary operations and comply with data privacy agreements, the organization name, specific metrics, and select variable names have been anonymized. The underlying architecture and engineering solutions remain entirely reflective of the production delivery.</em>
+    </p>
+  </div>
+
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="label">Industry</span>
+      <span class="val">Collision Repair / Group Purchasing</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="label">Stack</span>
+      <span class="val">Python · Power BI · Microsoft Fabric</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="label">Architecture</span>
+      <span class="val">Medallion · Bronze / Silver / Gold</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="label">Timeline</span>
+      <span class="val">5-Day Skills Assessment · May 2026</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</header>
+
+<!-- ══ MAIN ══ -->
+<main>
+
+  <!-- 01 CONTEXT -->
+  <section id="context">
+    <div class="section-label">01 — Context</div>
+    <h2>I started with the business, not the data.</h2>
+    <p>
+      Enterprise Collision Network (ECN) operates as a <strong>Group Purchasing Organization</strong> — 
+      a business model that's found across healthcare, hospitality, and independent retail. 
+      For this specific industry - Small, local collision shops subscribe to the ECN network because membership costs 
+      should be significantly outweighed by the rebate returns they receive from preferred supplier/distributor relationships.  
+    </p>
+    <p>
+      On their own - without ECN or similar automotive GPOs - these local automotives shops 
+      would not be able to negotiate the same level of rebates as they do with the network.
+    </p>
+    <p>
+      ECN earns revenue two ways: membership fees from affiliate shops, and a cut of the rebate 
+      dollars they distribute back. That dual revenue stream creates a <strong>thread of trust</strong> 
+      connecting every party in the chain. The distributor sends the rebate file. ECN validates and 
+      routes it. The affiliate trusts they're being paid correctly. When the data breaks, the trust breaks.
+    </p>
+    <div class="callout">
+      The primary risk is not just <strong>bad data</strong> — it is <strong>lost trust</strong>. 
+      Distributors have little incentive to ensure their reporting is accurate. That pressure has to 
+      come from me, the data engineer.
+    </div>
+    <p>
+      This 3-day assessment asked me to design and build a solution for automating rebate data ingestion and
+      validation. After developing an understanding of the business model better I concluded that exception monitoring was third necessity. 
+      I spent the first day purely on understanding the business landscape and mapping out an intuition of the underlying business logic.
+      Foremost, I defined the actual and rules of play before I touched the pipeline.
+    </p>
+  </section>
+
+  <!-- 02 WHAT THE DATA TOLD ME -->
+  <section id="findings">
+    <div class="section-label">02 — Initial Findings</div>
+    <h2>What the data revealed.</h2>
+    <p>
+      The dataset covered 11 partners and 2 rebate types across transactions spanning 2024–2026.
+      Before building anything, I let the data surface its own story.
+    </p>
+
+    <div class="decision-list">
+      <div class="decision-card">
+        <div class="d-icon">🔇</div>
+        <div>
+          <h4>100+ Non-Reporting Locations</h4>
+          <p>Affiliates present in the master list with zero rebate records. An affiliate being on record is enough to treat them as active — silence (lack of activity in the rebate dataset) is a signal worth investigating.</p>
+        </div>
+      </div>
+      <div class="decision-card">
+        <div class="d-icon">🔁</div>
+        <div>
+          <h4>Duplicate Transaction IDs — Not Errors</h4>
+          <p>The same transaction ID appeared across multiple rebate records. This is Rebate Decomposition — a single transaction triggering multiple rebate programs. Deduplicating on transaction_id alone would have silently removed valid revenue.</p>
+        </div>
+      </div>
+      <div class="decision-card">
+        <div class="d-icon">🏷️</div>
+        <div>
+          <h4>program_tier_id Behaves as a Tier, Not a Supplier</h4>
+          <p>I assumed program_tier_id was a supplier ID. When it didn't map cleanly to the Partner table, I profiled the column: only 8 distinct values, distributed like a ranking (one affiliate at tier 8, two at tier 7, more at tier 6...). That's a performance tier, not a vendor link. That distinction changed the entire exception logic.</p>
+        </div>
+      </div>
+      <div class="decision-card">
+        <div class="d-icon">⚠️</div>
+        <div>
+          <h4>Negative Amounts & Floating Point Issues</h4>
+          <p>Negative netamount values appeared in the data — possibly chargebacks, corrections, or errors. Floating point precision issues in the amount field also required handling at the Silver layer. Both flagged as open questions for the ops team.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMAGE: Anti-join screenshot -->
+    <div class="img-wrap">
+      <div class="img-center">
+        <img 
+          src="./images/silent_shops_anti_inner_join.png" 
+          alt="Anti-join result showing 106 affiliates present in the master list with zero rebate records"
+          class="case-img"
+        >
+      </div>
+      <div class="img-caption">Anti-join result: affiliates with zero rebate activity detected in data profiling</div>
+    </div>
+  </section>
+
+  <!-- 03 ARCHITECTURE -->
+  <section id="architecture">
+    <div class="section-label">03 — Architecture</div>
+    <h2>One architecture. Addresses Every problem.</h2>
+    <p>
+      Before defining exceptions, I identified the 12 ways rebate data can break — grouped into 
+      five risk buckets. Rather than solving each individually, I designed one framework that handles 
+      all of them the same way.
+    </p>
+
+    <div class="risk-grid">
+      <div class="risk-card">
+        <h4>Data Entry & Capture</h4>
+        <p>Multiple IDs, missing transactions, partial invoices, late data</p>
+      </div>
+      <div class="risk-card">
+        <h4>Assignment & Mapping</h4>
+        <p>Wrong affiliate or partner credited, stale master data</p>
+      </div>
+      <div class="risk-card">
+        <h4>Calculation & Rules</h4>
+        <p>Wrong amount basis, wrong tier applied, inconsistent definitions</p>
+      </div>
+      <div class="risk-card">
+        <h4>Transaction Integrity</h4>
+        <p>Duplicates, returns not applied</p>
+      </div>
+      <div class="risk-card" style="grid-column: span 2;">
+        <h4>Detection Gaps</h4>
+        <p>No validation, no anomaly detection, no reconciliation — the category this solution directly addresses</p>
+      </div>
+    </div>
+
+    <div class="framework">
+      <div class="fw-step">
+        <span class="fw-num">01</span>
+        <span class="fw-name">Prevent</span>
+        <span class="disclaimer">validation rules, constraints, schema enforcement</span>
+      </div>
+      <div class="fw-step">
+        <span class="fw-num">02</span>
+        <span class="fw-name">Detect</span>
+        <span class="disclaimer">automated checks, anomaly models, reconciliation</span>
+      </div>
+      <div class="fw-step">
+        <span class="fw-num">03</span>
+        <span class="fw-name">Quarantine</span>
+        <span class="disclaimer">isolate bad records without stopping good data flow</span>
+      </div>
+      <div class="fw-step">
+        <span class="fw-num">04</span>
+        <span class="fw-name">Repair</span>
+        <span class="disclaimer">auto-correct when possible (fuzzy matching, recalculation)</span>
+      </div>
+      <div class="fw-step">
+        <span class="fw-num">05</span>
+        <span class="fw-name">Escalate</span>
+        <span class="disclaimer">route uncertain cases to human review</span>
+      </div>
+    </div>
+
+    <h3>Medallion Architecture</h3>
+    <p>
+      The Medallion pattern was the right fit for three reasons: <strong>data consistency</strong>, 
+      a <strong>layered backup strategy</strong>, and <strong>auditability</strong>. In a rebate 
+      context where affiliates need to trust that their payments are accurate, you need to answer 
+      "what did the distributor actually send us?" at any point in time. Bronze does that.
+    </p>
+
+    <div class="layer-cards">
+      <div class="layer-card bronze">
+        <span class="layer-tag">Bronze</span>
+        <h4>Raw &amp; Immutable</h4>
+        <p>Exactly what the distributor sent. Never touched. Permanent recovery point and audit trail. If anything downstream breaks, we reprocess from here — no re-ingestion required.</p>
+      </div>
+      <div class="layer-card silver">
+        <span class="layer-tag">Silver</span>
+        <h4>Trusted</h4>
+        <p>Date conversion, amount rounding, entity joins, parent-child resolution, quality checks, bad record quarantine. This is where Detect and Quarantine live.</p>
+      </div>
+      <div class="layer-card gold">
+        <span class="layer-tag">Gold</span>
+        <h4>Analytics-Ready</h4>
+        <p>Aggregated metrics, exception flags, Health Scores, business narratives. Everything here is a decision waiting to be made by a human. Built specifically for the BI team.</p>
+      </div>
+    </div>
+
+ <!-- IMAGE: Medallion diagram -->
+  <div class="img-wrap">
+    <div class="img-center">
+      <img
+        src="./images/data-lineage-diagram.png"
+        alt="Medallion architecture flow diagram: Distributor File to Bronze to Silver to Gold to Power BI to Ops, BI, and Leadership teams"
+        class="case-img"
+      >
+    </div>
+    <div class="img-caption">Medallion architecture with exception branching and RBAC access control at each layer</div>
+  </div>
+  </section>
+
+  <!-- 04 ENGINEERING DECISIONS -->
+  <section id="decisions">
+    <div class="section-label">04 — Key Engineering Decisions</div>
+    <h2>The choices that mattered most.</h2>
+
+    <h3>Composite Primary Key</h3>
+    <p>
+      Transaction IDs are not unique — the same transaction can generate multiple rebate entries 
+      representing a base rebate and separate promotional rebates. Treating duplicates as errors 
+      would have silently removed valid revenue from the pipeline.
+    </p>
+    <p>
+      The composite key — <code>(transaction_id + partner_id + memo + netamount)</code> — treats 
+      each rebate event as its own grain. The inclusion of <code>memo</code> is a forward-looking 
+      decision: it covers edge cases where the first three fields are identical across two legitimately 
+      different events, and provides a buffer if memo values evolve over time.
+    </p>
+
+    <div class="code-block">
+      <pre><span class="cm"># Composite key prevents rebate decomposition events from being</span>
+<span class="cm"># cleaned out as duplicates — each program-level event is its own grain</span>
+
+silver_df[<span class="cs">'composite_key'</span>] = (
+    silver_df[<span class="cs">'transaction_id'</span>].astype(str) + <span class="cs">'_'</span> +
+    silver_df[<span class="cs">'partner_id'</span>].astype(str)    + <span class="cs">'_'</span> +
+    silver_df[<span class="cs">'memo'</span>].fillna(<span class="cs">''</span>)             + <span class="cs">'_'</span> +
+    silver_df[<span class="cs">'net_amount'</span>].astype(str)
+)</pre>
+    </div>
+
+    <h3>Centralized Exception Table</h3>
+    <p>
+      Rather than building separate exception tables for each error type, one centralized table 
+      captures all bad records with the same schema — regardless of whether the issue is a null 
+      affiliate ID, a volume anomaly, or a schema mismatch. This makes it auditable, scalable, 
+      and straightforward to build reporting on top of.
+    </p>
+
+    <div class="code-block">
+      <pre><span class="cm"># Every exception — regardless of type — lands in the same place</span>
+exception_schema = {
+    <span class="cs">'row_id'</span>:       <span class="cn">str</span>,     <span class="cm"># unique identifier</span>
+    <span class="cs">'source'</span>:       <span class="cn">str</span>,     <span class="cm"># which table / feed</span>
+    <span class="cs">'error_type'</span>:   <span class="cn">str</span>,     <span class="cm"># null_id / volume_outlier / etc.</span>
+    <span class="cs">'severity'</span>:     <span class="cn">str</span>,     <span class="cm"># HIGH / MEDIUM / LOW</span>
+    <span class="cs">'field'</span>:        <span class="cn">str</span>,     <span class="cm"># affected column</span>
+    <span class="cs">'detected_at'</span>:  <span class="cn">datetime</span>,
+    <span class="cs">'status'</span>:       <span class="cn">str</span>      <span class="cm"># open / resolved / escalated</span>
+}</pre>
+    </div>
+
+    <h3>Two-Audience Alert System</h3>
+    <p>
+      Technical alerts (schema changes, missing files, row count drops) route to the data engineer. 
+      Business alerts (affiliate rebate drops &gt;30%, entire parent groups going dark) route to the 
+      ops team. Same system, two audiences, routed based on who can actually act on the information.
+    </p>
+
+    <!-- IMAGE: Pipeline folder structure -->
+    <div class="sc-wrap">
+      <p class="sc-title">MSO Silent Group — Scenario Classification</p>
+      <table class="sc-table">
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Classification</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Parent group is no longer active / exited CCG</td>
+            <td><span class="sc-badge biz">Business alert</span></td>
+            <td>Requires business confirmation — not a data error</td>
+          </tr>
+          <tr>
+            <td>Parent group is newly onboarded</td>
+            <td><span class="sc-badge biz">Business alert</span></td>
+            <td>Expected inactivity but needs tracking</td>
+          </tr>
+          <tr>
+            <td>Parent group buying off-contract</td>
+            <td><span class="sc-badge biz">Business alert</span></td>
+            <td>Indicates potential revenue leakage or compliance issue</td>
+          </tr>
+          <tr>
+            <td>Parent routing purchases through another entity</td>
+            <td><span class="sc-badge biz">Business alert</span></td>
+            <td>Requires business investigation into purchasing behavior</td>
+          </tr>
+          <tr>
+            <td>Children mapped incorrectly (ID drift)</td>
+            <td><span class="sc-badge tech">Technical alert</span></td>
+            <td>Indicates a mapping or data integration issue</td>
+          </tr>
+          <tr>
+            <td>Supplier feed incomplete / missing</td>
+            <td><span class="sc-badge tech">Technical alert</span></td>
+            <td>Indicates an ingestion or file delivery failure</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 05 DATA MODEL -->
+  <section id="datamodel">
+    <div class="section-label">05 — Data Model</div>
+    <h2>The schema was already there. I just made it explicit.</h2>
+    <p>
+      The dataset naturally followed a star schema — I didn't impose structure on it. The Rebate 
+      table is the fact table, with direct foreign key references to both Affiliate and Partner 
+      dimensions. The one addition I made was a derived Date dimension for cleaner Power BI 
+      time-intelligence calculations.
+    </p>
+    <p>
+      Two relationships in the model are worth calling out specifically:
+    </p>
+    <div class="decision-list">
+      <div class="decision-card">
+        <div class="d-icon">🔗</div>
+        <div>
+          <h4>Affiliate.program_tier_id ❌ Partner.id</h4>
+          <p>This is where sponsor mismatches live. Once I established that program_tier_id is a performance tier rather than a supplier ID, this relationship became a validation tool — confirming whether affiliates are being paid at the correct tier level.</p>
+        </div>
+      </div>
+      <div class="decision-card">
+        <div class="d-icon">🌳</div>
+        <div>
+          <h4>Affiliate.parent_id → Affiliate.id (self-referencing)</h4>
+          <p>Multi-Shop Organization hierarchy. When a parent_id is null, the pipeline defaults to the affiliate's own ID — this keeps all MSO rollup reporting structurally sound without breaking parent-group visuals.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMAGE: ERD -->
+    <div class="img-wrap">
+      <div class="img-placeholder">
+        <div class="img-icon">📐</div>
+        <div class="img-label">INSERT IMAGE: Entity Relationship Diagram (ERD)</div>
+        <div class="img-sub">Show Rebate (fact) connected to Affiliate, Partner, and Date dimensions. Highlight program_tier_id → Partner.id linkage and self-referencing parent_id relationship.</div>
+      </div>
+      <div class="img-caption">Star schema ERD — Rebate fact table with Affiliate, Partner, and Date dimensions</div>
+    </div>
+  </section>
+
+  <!-- 06 DASHBOARD -->
+  <section id="dashboard">
+    <div class="section-label">06 — Exception Dashboard</div>
+    <h2>The ops team shouldn't have to investigate. The dashboard should tell them.</h2>
+    <p>
+      The Power BI dashboard was designed around one principle: instead of asking the ops team to 
+      hunt through hundreds of rows, surface which shops need a phone call today.
+    </p>
+    <p>
+      The dashboard includes three completed pages and two Phase 2 designs pending additional 
+      business rules:
+    </p>
+    <div class="decision-list">
+      <div class="decision-card">
+        <div class="d-icon">📊</div>
+        <div>
+          <h4>Executive Summary</h4>
+          <p>Total rebates, active vs silent affiliate counts, exception counts, data freshness timestamp. Designed for leadership-level consumption at a glance.</p>
+        </div>
+      </div>
+      <div class="decision-card">
+        <div class="d-icon">🔇</div>
+        <div>
+          <h4>Silent Shops</h4>
+          <p>Zero-activity affiliates filtered by parent group and state. Helps the ops team identify whether silence is one shop or an entire Multi-Shop Organization.</p>
+        </div>
+      </div>
+      <div class="decision-card">
+        <div class="d-icon">🚨</div>
+        <div>
+          <h4>Anomaly Detail</h4>
+          <p>Negative amounts, volume outliers, bad data flags — each with a plain-English "Reason for Flag" narrative column. No investigation required to understand why a record is flagged.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      Volume outlier detection uses <strong>IQR (Interquartile Range)</strong> — chosen because it 
+      doesn't assume a normal distribution, which matters when purchasing behavior varies significantly 
+      across affiliate sizes. A threshold that works for a large multi-shop group would be noise for 
+      a small independent shop.
+    </div>
+
+    <!-- IMAGE: Dashboard screenshot -->
+    <div class="img-wrap">
+      <div class="img-placeholder">
+        <div class="img-icon">📱</div>
+        <div class="img-label">INSERT IMAGE: Power BI Dashboard Screenshot</div>
+        <div class="img-sub">Screenshot of the Exception Dashboard — Executive Summary page or Anomaly Detail page. Show exception flags, data freshness card, and Reason for Flag column.</div>
+      </div>
+      <div class="img-caption">Power BI exception dashboard — anomaly detection with plain-English flag narratives</div>
+    </div>
+  </section>
+
+  <!-- 07 COMMERCIAL IMPACT -->
+  <section id="impact">
+    <div class="section-label">07 — Commercial Impact</div>
+    <h2>This isn't just cleaner data. It's three things ECN can't do without it.</h2>
+
+    <div class="impact-grid">
+      <div class="impact-card">
+        <span class="i-num">01</span>
+        <h4>Reliability as a Brand</h4>
+        <p>Clean, accurate, timely data raises ECN's credibility with both suppliers and affiliates. Trust is the product — the pipeline protects it.</p>
+      </div>
+      <div class="impact-card">
+        <span class="i-num">02</span>
+        <h4>Negotiation Leverage</h4>
+        <p>Provable affiliate sponsor compliance (97%+) gives ECN leverage to negotiate higher rebate percentages at contract renewal. Data becomes a negotiating asset.</p>
+      </div>
+      <div class="impact-card">
+        <span class="i-num">03</span>
+        <h4>Decreased Audit Risk</h4>
+        <p>Accurate automation prevents the scenario where a supplier realizes they overpaid and demands money back a year later. The immutable Bronze layer is the receipt.</p>
+      </div>
+    </div>
+
+    <p>
+      The rebate problem is the first problem. But the solution described here doesn't just fix 
+      the rebate problem — it builds the data foundation that everything else the business wants 
+      to do with data will eventually sit on top of.
+    </p>
+  </section>
+
+  <!-- 08 WHAT I LEARNED -->
+  <section id="reflection">
+    <div class="section-label">08 — Reflection</div>
+    <h2>What I'd do differently.</h2>
+    <p>
+      After presenting this solution to the panel, I received feedback that stuck with me: 
+      the technical decisions were clear, but I hadn't consistently drawn the line between 
+      each technical choice and its commercial outcome. Not "I built a medallion architecture" — 
+      but "this architecture means ECN stops losing rebate revenue the moment it goes live." 
+      Not "I flagged 106 silent shops" — but "Over 100 shops represent unrecovered rebates that 
+      should show up on next quarter's reconciliation."
+    </p>
+
+    <div class="feedback-box">
+      <div class="fb-label">Feedback from the hiring panel</div>
+      <p>"Your technical capability came through very clearly. Where I think there was an opportunity to go one step further was in tying those technical decisions more directly back to the commercial impact — primarily, how the solution would influence decisions or outcomes."</p>
+    </div>
+
+    <p>
+      That's a presentation habit, not a capability gap. One sentence per slide connecting the 
+      engineering decision to the dollar outcome. I've carried it forward into everything since.
+    </p>
+    <p>
+      I'm also glad I documented my assumptions explicitly and flagged them as assumptions. 
+      Working with one month of data against a production-scale problem means everything is 
+      inference until it's validated. The discipline of separating "what I built" from 
+      "what I'd need to confirm" is one I'll keep.
+    </p>
+  </section>
+
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="f-inner">
+    <div>
+      <div class="f-name">Ecclesia Morain</div>
+      <div class="f-title">Cloud Data Engineer · Azure · GCP · Microsoft Fabric</div>
+      <a href="https://github.com" class="gh-link" target="_blank">
+        ⌥ View on GitHub
+      </a>
+    </div>
+    <div class="f-links">
+      <a href="https://linkedin.com/in/ecclesiamorain" target="_blank">LinkedIn →</a>
+      <a href="mailto:ecclesia@example.com">Email →</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll-triggered section reveals
+  const sections = document.querySelectorAll('section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
