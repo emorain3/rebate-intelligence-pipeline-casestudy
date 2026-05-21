@@ -15,7 +15,7 @@ The problem: a regional network of independent collision repair shops was proces
 
 ## The case study
 
-👉 [emorain3.github.io/rebate-intelligence-pipeline](https://emorain3.github.io/rebate-intelligence-pipeline)
+👉 [https://emorain3.github.io/rebate-intelligence-pipeline-casestudy/](https://emorain3.github.io/rebate-intelligence-pipeline-casestudy/)
 
 ---
 ## The Python Pipeline can be found here:
