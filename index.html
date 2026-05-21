@@ -796,7 +796,7 @@
       come from me, the data engineer.
     </div>
     <p>
-      This 3-day assessment asked me to design and build a solution for automating rebate data ingestion and
+      This 5-day assessment asked me to design and build a solution for automating rebate data ingestion and
       validation. After developing an understanding of the business model better I concluded that exception monitoring was third necessity. 
       I spent the first day purely on understanding the business landscape and mapping out an intuition of the underlying business logic.
       Foremost, I defined the actual and rules of play before I touched the pipeline.
@@ -1027,7 +1027,7 @@ exception_schema = {
         </thead>
         <tbody>
           <tr>
-            <td>Parent group is no longer active / exited CCG</td>
+            <td>Parent group is no longer active / exited ECN</td>
             <td><span class="sc-badge biz">Business alert</span></td>
             <td>Requires business confirmation — not a data error</td>
           </tr>
@@ -1079,7 +1079,7 @@ exception_schema = {
         <div class="d-icon">🔗</div>
         <div>
           <h4>Affiliate.program_tier_id ❌ Partner.id</h4>
-          <p>This is where sponsor mismatches live. Once I established that program_tier_id is a performance tier rather than a supplier ID, this relationship became a validation tool — confirming whether affiliates are being paid at the correct tier level.</p>
+          <p>This is where critical business validation logic lives. Once I established that program_tier_id is a performance tier rather than a supplier ID, this relationship became a validation tool — confirming whether affiliates are being paid at the correct tier level.</p>
         </div>
       </div>
       <div class="decision-card">
@@ -1093,11 +1093,11 @@ exception_schema = {
 
     <!-- IMAGE: ERD -->
     <div class="img-wrap">
-      <div class="img-placeholder">
-        <div class="img-icon">📐</div>
-        <div class="img-label">INSERT IMAGE: Entity Relationship Diagram (ERD)</div>
-        <div class="img-sub">Show Rebate (fact) connected to Affiliate, Partner, and Date dimensions. Highlight program_tier_id → Partner.id linkage and self-referencing parent_id relationship.</div>
-      </div>
+      <img 
+        src="./images/rebate_pipeline_ERD.png" 
+        alt="Star schema ERD — Rebate fact table with Affiliate, Partner, and Date dimensions"
+        style="width:100%; height:auto; display:block;"
+      />
       <div class="img-caption">Star schema ERD — Rebate fact table with Affiliate, Partner, and Date dimensions</div>
     </div>
   </section>
@@ -1108,13 +1108,15 @@ exception_schema = {
     <h2>The ops team shouldn't have to investigate. The dashboard should tell them.</h2>
     <p>
       The Power BI dashboard was designed around one principle: instead of asking the ops team to 
-      hunt through hundreds of rows, surface which shops need a phone call today.
+      hunt through hundreds of rows, the dashboard serves as a one-stop-shop to indicate which shops need a phone call today. 
+      With the appropriate licensing I would tie the Power BI Service elements to detailed, actionable email alerts 
+      given specific threshold amounts.
     </p>
     <p>
-      The dashboard includes three completed pages and two Phase 2 designs pending additional 
+      This version of the dashboard includes three completed pages and two Phase 2 designs pending additional 
       business rules:
     </p>
-    <div class="decision-list">
+    <div class="decision-list"> 
       <div class="decision-card">
         <div class="d-icon">📊</div>
         <div>
@@ -1136,6 +1138,7 @@ exception_schema = {
           <p>Negative amounts, volume outliers, bad data flags — each with a plain-English "Reason for Flag" narrative column. No investigation required to understand why a record is flagged.</p>
         </div>
       </div>
+      
     </div>
 
     <div class="callout">
@@ -1147,10 +1150,31 @@ exception_schema = {
 
     <!-- IMAGE: Dashboard screenshot -->
     <div class="img-wrap">
-      <div class="img-placeholder">
-        <div class="img-icon">📱</div>
-        <div class="img-label">INSERT IMAGE: Power BI Dashboard Screenshot</div>
-        <div class="img-sub">Screenshot of the Exception Dashboard — Executive Summary page or Anomaly Detail page. Show exception flags, data freshness card, and Reason for Flag column.</div>
+      <div class="img-wrap" style="margin-bottom: 2rem;">
+        <img 
+          src="./images/rebate_dashboard_executive_summary.png" 
+          alt="Executive Summary — total rebates, participation ratio, decline alerts, data freshness"
+          style="width:100%; height:auto; display:block;"
+        />
+        <div class="img-caption">Executive Summary — total rebates, active vs total affiliates, decline alert count, data freshness timestamp</div>
+      </div>
+      
+      <div class="img-wrap" style="margin-bottom: 2rem;">
+        <img 
+          src="./images/rebate_dashboard_silent_shops.png" 
+          alt="Silent Shops — zero-activity affiliates by parent group and activity status"
+          style="width:100%; height:auto; display:block;"
+        />
+        <div class="img-caption">Silent Shops — 75 inactive affiliates surfaced by activity status, with months since last transaction</div>
+      </div>
+      
+      <div class="img-wrap">
+        <img 
+          src="./images/rebate_dashboard_anomaly_detection.png" 
+          alt="Anomaly Detail — flagged affiliates with decline alerts, dormant shops, and severity classification"
+          style="width:100%; height:auto; display:block;"
+        />
+        <div class="img-caption">Anomaly Detail — unified exception view across decline alerts, dormant shops, negative rebates, and partner feed issues</div>
       </div>
       <div class="img-caption">Power BI exception dashboard — anomaly detection with plain-English flag narratives</div>
     </div>
@@ -1189,24 +1213,18 @@ exception_schema = {
   <!-- 08 WHAT I LEARNED -->
   <section id="reflection">
     <div class="section-label">08 — Reflection</div>
-    <h2>What I'd do differently.</h2>
+    <h2>What this taught me.</h2>
     <p>
-      After presenting this solution to the panel, I received feedback that stuck with me: 
-      the technical decisions were clear, but I hadn't consistently drawn the line between 
-      each technical choice and its commercial outcome. Not "I built a medallion architecture" — 
-      but "this architecture means ECN stops losing rebate revenue the moment it goes live." 
-      Not "I flagged 106 silent shops" — but "Over 100 shops represent unrecovered rebates that 
-      should show up on next quarter's reconciliation."
+      The most useful feedback I received after this project was that my technical decisions 
+      were clear, but I hadn't consistently connected them to commercial outcomes. Not 
+      "I flagged 106 silent shops" — but "over 100 affiliates represent unrecovered rebates 
+      that should show up on next quarter's reconciliation." The engineering is only half 
+      the story. The other half is what it means for the business.
     </p>
-
-    <div class="feedback-box">
-      <div class="fb-label">Feedback from the hiring panel</div>
-      <p>"Your technical capability came through very clearly. Where I think there was an opportunity to go one step further was in tying those technical decisions more directly back to the commercial impact — primarily, how the solution would influence decisions or outcomes."</p>
-    </div>
-
     <p>
-      That's a presentation habit, not a capability gap. One sentence per slide connecting the 
-      engineering decision to the dollar outcome. I've carried it forward into everything since.
+      I've carried that forward. Every technical decision now gets a "so what" — one sentence 
+      that translates the implementation into a business outcome. It's a small habit with a 
+      significant impact on how technical work lands in a room of mixed audiences.
     </p>
     <p>
       I'm also glad I documented my assumptions explicitly and flagged them as assumptions. 
