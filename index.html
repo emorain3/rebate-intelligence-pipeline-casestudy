@@ -748,8 +748,12 @@
       <span class="val">Collision Repair / Group Purchasing</span>
     </div>
     <div class="hero-meta-item">
-      <span class="label">Stack</span>
-      <span class="val">Python · Power BI · Microsoft Fabric</span>
+      <span class="label">Phase 1 Stack</span>
+      <span class="val">Python · Pandas · Microsoft Fabric · Power BI</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="label">Phase 2 Stack</span>
+      <span class="val">Snowflake · dbt Core · Streamlit</span>
     </div>
     <div class="hero-meta-item">
       <span class="label">Architecture</span>
@@ -956,9 +960,83 @@
   </div>
   </section>
 
-  <!-- 04 ENGINEERING DECISIONS -->
+  <!-- 04 PHASE 2: ENTERPRISE STACK EXTENSION -->
+  <section id="phase2">
+    <div class="section-label">04 — Phase 2: Enterprise Stack Extension</div>
+    <h2>The same pipeline. A more powerful foundation.</h2>
+    <p>
+      The original pipeline was built for a specific context — a small operations team,
+      a single BI output, a Microsoft-native environment. That context made Microsoft Fabric
+      the right choice. Phase 2 is not a correction of Phase 1. It's an extension onto a
+      stack built for environments where the data platform serves multiple teams, multiple
+      output types, and needs transformation logic that can be version-controlled, tested,
+      and handed off.
+    </p>
+
+    <div class="callout">
+      <strong>Fabric</strong> is the right tool when a small, stable team needs a single output
+      in a Microsoft-native environment. <strong>Snowflake + dbt</strong> is the right tool when
+      transformation logic is complex enough to need version control, automated testing, and
+      a visible lineage graph — and when multiple teams consume the same data in different ways.
+    </div>
+
+    <p>
+      The Phase 2 rebuild implements the same Medallion architecture — Bronze, Silver, Gold —
+      in dbt Core on Snowflake. Every transformation is a SQL file in Git. Every table is
+      protected by automated tests. The dependency graph is generated automatically and hosted publicly.
+    </p>
+
+    <div class="decision-list">
+      <div class="decision-card">
+        <div class="d-icon">🔬</div>
+        <div>
+          <h4>25 Passing dbt Tests Across 9 Models</h4>
+          <p>Uniqueness, null checks, and referential integrity between fact and dimension tables — enforced automatically on every pipeline run. Includes a custom singular test encoding the silent shop detection rule as a testable data contract.</p>
+        </div>
+      </div>
+      <div class="decision-card">
+        <div class="d-icon">🧬</div>
+        <div>
+          <h4>Exception Typing at Silver, Classification at Gold</h4>
+          <p>Rather than a binary flag, the Silver layer stamps each anomalous row with an exception type — zero_amount, null_amount, negative_amount, null_memo, null_partner. The Gold mart then aggregates to determine silent shop status. Detection and classification live at different layers by design.</p>
+        </div>
+      </div>
+      <div class="decision-card">
+        <div class="d-icon">🗂️</div>
+        <div>
+          <h4>MD5 Surrogate Key over Composite Natural Key</h4>
+          <p>The composite key (transaction_id + partner_id + memo) is hashed via MD5 into a single fixed-length surrogate key — the same deduplication logic as Phase 1, now encoded as a stable, joinable primary key that dbt can test uniqueness against directly.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="img-wrap">
+      <div class="img-center">
+        <img
+          src="./images/rebate-pipeline-dbt-lineage-graph.png"
+          alt="dbt lineage graph showing full DAG from bronze source tables through staging, intermediate, and mart layers"
+          class="case-img"
+        >
+      </div>
+      <div class="img-caption">Full DAG: bronze sources → staging → intermediate → marts, including the custom singular regression test — generated automatically by dbt docs</div>
+    </div>
+
+    <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:1.5rem;">
+      <a href="https://emorain3.github.io/rebate-intelligence-pipeline/" class="gh-link" target="_blank">
+        ⬡ Explore Live Lineage Graph
+      </a>
+      <a href="https://rebate-intelligence-pipeline-dashboard.streamlit.app/" class="gh-link" target="_blank">
+        ▶ View Live Dashboard
+      </a>
+      <a href="https://github.com/emorain3/rebate-intelligence-pipeline" class="gh-link" target="_blank">
+        ⌥ View Pipeline on GitHub
+      </a>
+    </div>
+  </section>
+
+  <!-- 05 ENGINEERING DECISIONS -->
   <section id="decisions">
-    <div class="section-label">04 — Key Engineering Decisions</div>
+    <div class="section-label">05 — Key Engineering Decisions</div>
     <h2>The choices that mattered most.</h2>
 
     <h3>Composite Primary Key</h3>
@@ -1063,7 +1141,7 @@ exception_schema = {
 
   <!-- 05 DATA MODEL -->
   <section id="datamodel">
-    <div class="section-label">05 — Data Model</div>
+    <div class="section-label">06 — Data Model</div>
     <h2>The schema was already there. I just made it explicit.</h2>
     <p>
       The dataset naturally followed a star schema — I didn't impose structure on it. The Rebate 
@@ -1104,7 +1182,7 @@ exception_schema = {
 
   <!-- 06 DASHBOARD -->
   <section id="dashboard">
-    <div class="section-label">06 — Exception Dashboard</div>
+    <div class="section-label">07 — Exception Dashboard</div>
     <h2>The ops team shouldn't have to investigate. The dashboard should tell them.</h2>
     <p>
       The Power BI dashboard was designed around one principle: instead of asking the ops team to 
@@ -1182,7 +1260,7 @@ exception_schema = {
 
   <!-- 07 COMMERCIAL IMPACT -->
   <section id="impact">
-    <div class="section-label">07 — Commercial Impact</div>
+    <div class="section-label">08 — Commercial Impact</div>
     <h2>This isn't just cleaner data. It's three things ECN can't do without it.</h2>
 
     <div class="impact-grid">
@@ -1212,7 +1290,7 @@ exception_schema = {
 
   <!-- 08 WHAT I LEARNED -->
   <section id="reflection">
-    <div class="section-label">08 — Reflection</div>
+    <div class="section-label">09 — Reflection</div>
     <h2>What this taught me.</h2>
     <p>
       The most useful feedback I received after this project was that my technical decisions 
@@ -1227,10 +1305,16 @@ exception_schema = {
       significant impact on how technical work lands in a room of mixed audiences.
     </p>
     <p>
-      I'm also glad I documented my assumptions explicitly and flagged them as assumptions. 
-      Working with one month of data against a production-scale problem means everything is 
-      inference until it's validated. The discipline of separating "what I built" from 
+      I'm also glad I documented my assumptions explicitly and flagged them as assumptions.
+      Working with one month of data against a production-scale problem means everything is
+      inference until it's validated. The discipline of separating "what I built" from
       "what I'd need to confirm" is one I'll keep.
+    </p>
+    <p>
+      The Phase 2 rebuild on Snowflake and dbt was driven by the same principle — building 
+      things I can explain and defend, not just things that run. Every architectural decision 
+      in the dbt layer has a reason I can articulate, because I didn't move forward until I 
+      understood it.
     </p>
   </section>
 
@@ -1241,7 +1325,7 @@ exception_schema = {
   <div class="f-inner">
     <div>
       <div class="f-name">Ecclesia Morain</div>
-      <div class="f-title">Cloud Data Engineer · Azure · GCP · Microsoft Fabric</div>
+      <div class="f-title">Cloud Data Engineer · Azure · GCP · Snowflake · dbt</div>
       <a href="https://github.com/emorain3/rebate-intelligence-pipeline" class="gh-link" target="_blank">
         ⌥ View on GitHub
       </a>
