@@ -1,4 +1,4 @@
-# Automated Revenue Recovery Pipeline
+# Auto Shop Revenue Recovery Presentation
 
 A data engineering case study built in five days as part of a technical skills assessment. The problem: a regional network of independent collision repair shops was processing rebate data manually — a slow, error-prone process that made it nearly impossible to catch missed payments or flag suspicious activity. This project is my proposed solution, extended onto a modern analytics engineering stack.
 
